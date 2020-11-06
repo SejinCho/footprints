@@ -17,6 +17,8 @@
         <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="resources/css/styles.css" rel="stylesheet" />
+        <!-- kakao login -->
+        <script src = "//developers.kakao.com/sdk/js/kakao.min.js"></script>
     </head>
     <body id="page-top">
         <!-- Masthead-->
@@ -24,7 +26,7 @@
             <div class="container">
                 <div class="masthead-subheading">Welcome To Our Studio!</div>
                 <div class="masthead-heading text-uppercase">It's Nice To Meet You</div>
-                <a class="btn btn-primary btn-xl text-uppercase js-scroll-trigger" href="#services">Tell Me More</a>
+                <a id="kakao-login-btn"></a>
             </div>
         </header>
         <!-- Services-->
@@ -511,5 +513,30 @@
         <script src="resources/assets/mail/contact_me.js"></script>
         <!-- Core theme JS-->
         <script src="resources/js/scripts.js"></script>
+        <script>
+        //카카오 로그인
+        Kakao.init('2505cedff552111a7d6811a427587c7d'); //자바스크립트 키
+        Kakao.Auth.createLoginButton({ 
+			container: '#kakao-login-btn', 
+			success: function(authObj) { 
+				Kakao.API.request({
+			    	url: '/v2/user/me',
+			        success: function(res) {
+	                console.log(res.id);//<---- 콘솔 로그에 id 정보 출력(id는 res안에 있기 때문에  res.id 로 불러온다)
+	                console.log(res.kaccount_email);//<---- 콘솔 로그에 email 정보 출력 (어딨는지 알겠죠?)
+	                console.log(res.properties['nickname']);//<---- 콘솔 로그에 닉네임 출력(properties에 있는 nickname 접근 
+	          		// res.properties.nickname으로도 접근 가능 )
+	                console.log(authObj.access_token);//<---- 콘솔 로그에 토큰값 출력
+			        var kakaonickname = res.properties.nickname;    //카카오톡 닉네임을 변수에 저장 (닉네임 값을 다른페이지로 넘겨 출력하기 위해서)
+			        //db에 내용 저장하기
+			        }
+	           })
+           },
+		   fail: function(error) {
+		       alert(JSON.stringify(error));
+		   }
+	    });
+        
+        </script>
     </body>
 </html>
