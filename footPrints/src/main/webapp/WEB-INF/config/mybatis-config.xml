@@ -8,5 +8,10 @@
         <setting name="jdbcTypeForNull" value="NULL" />
         <setting name="localCacheScope" value="STATEMENT"/>
     </settings>
-	
+    <typeAliases>
+    	<typeAlias type="kr.sejin.footprints.member.MemberDTO" alias="member"/>
+    </typeAliases>
+	<mappers>
+		<mapper resource="mapper/member.xml"/>
+	</mappers>
 </configuration>

@@ -479,6 +479,11 @@ mark,
   height: auto;
 }
 
+.img-header {
+  max-width: 15%;
+  height: auto;
+}
+
 .img-thumbnail {
   padding: 0.25rem;
   background-color: #fff;
@@ -10045,6 +10050,7 @@ img::-moz-selection {
   border-radius: 100%;
 }
 
+
 #mainNav {
   padding-top: 1rem;
   padding-bottom: 1rem;
@@ -10119,7 +10125,7 @@ header.masthead {
   padding-bottom: 6rem;
   text-align: center;
   color: #fff;
-  background-image: url("../assets/img/header-bg.jpg");
+  background-image: url("../assets/img/footprints-541177_1920.jpg");
   background-repeat: no-repeat;
   background-attachment: scroll;
   background-position: center center;

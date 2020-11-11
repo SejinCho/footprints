@@ -9,5 +9,5 @@
 
 
 	<view-controller path="/index.do" view-name="index"/>
-	
+	<view-controller path="/leaveFootprints.do" view-name="leaveFootprints"/>
 </beans:beans>

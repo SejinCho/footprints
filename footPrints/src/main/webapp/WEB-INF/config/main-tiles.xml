@@ -15,4 +15,9 @@
 	
 	<!-- index 페이지 등록 -->
 	<definition name="index" extends="mainTemplate"></definition>
+	
+	<!-- leaveFootprints 페이지 등록 -->
+	<definition name="leaveFootprints" extends="mainTemplate">
+		<put-attribute name="content" value="/WEB-INF/pages/leaveFootprints.jsp"/>
+	</definition>
 </tiles-definitions>

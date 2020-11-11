@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -21,12 +22,20 @@
         <script src = "//developers.kakao.com/sdk/js/kakao.min.js"></script>
     </head>
     <body id="page-top">
+    <input type="hidden" value="${result}" name="result">
         <!-- Masthead-->
         <header class="masthead">
             <div class="container">
-                <div class="masthead-subheading">Welcome To Our Studio!</div>
-                <div class="masthead-heading text-uppercase">It's Nice To Meet You</div>
-                <a id="kakao-login-btn"></a>
+                <c:if test="${result eq 0}">
+	                <div class="masthead-subheading">Welcome To Our Studio!</div>
+	                <div class="masthead-heading text-uppercase">Please sign up</div>
+	                <a id="kakao-login-btn"></a>
+                </c:if>
+                <c:if test="${result eq 1}">
+                	<div class="masthead-subheading">반갑습니다! ${memberDto.kakao_nickname}님</div>
+	                <div class="masthead-heading text-uppercase">Leave your footprints</div>
+                	<img class="rounded-circle img-header" src="${memberDto.kakao_profile_image}" alt="" />
+                </c:if>
             </div>
         </header>
         <!-- Services-->
@@ -34,7 +43,7 @@
             <div class="container">
                 <div class="text-center">
                     <h2 class="section-heading text-uppercase">Services</h2>
-                    <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
+                    <h3 class="section-subheading text-muted"><a href="/footprints/leaveFootprints.do">More contents</a></h3>
                 </div>
                 <div class="row text-center">
                     <div class="col-md-4">
@@ -284,44 +293,7 @@
                 </div>
             </div>
         </div>
-        <!-- Contact-->
-        <section class="page-section" id="contact">
-            <div class="container">
-                <div class="text-center">
-                    <h2 class="section-heading text-uppercase">Contact Us</h2>
-                    <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
-                </div>
-                <form id="contactForm" name="sentMessage" novalidate="novalidate">
-                    <div class="row align-items-stretch mb-5">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <input class="form-control" id="name" type="text" placeholder="Your Name *" required="required" data-validation-required-message="Please enter your name." />
-                                <p class="help-block text-danger"></p>
-                            </div>
-                            <div class="form-group">
-                                <input class="form-control" id="email" type="email" placeholder="Your Email *" required="required" data-validation-required-message="Please enter your email address." />
-                                <p class="help-block text-danger"></p>
-                            </div>
-                            <div class="form-group mb-md-0">
-                                <input class="form-control" id="phone" type="tel" placeholder="Your Phone *" required="required" data-validation-required-message="Please enter your phone number." />
-                                <p class="help-block text-danger"></p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group form-group-textarea mb-md-0">
-                                <textarea class="form-control" id="message" placeholder="Your Message *" required="required" data-validation-required-message="Please enter a message."></textarea>
-                                <p class="help-block text-danger"></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-center">
-                        <div id="success"></div>
-                        <button class="btn btn-primary btn-xl text-uppercase" id="sendMessageButton" type="submit">Send Message</button>
-                    </div>
-                </form>
-            </div>
-        </section>
-        
+
         <!-- Portfolio Modals-->
         <!-- Modal 1-->
         <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true">
@@ -522,13 +494,19 @@
 				Kakao.API.request({
 			    	url: '/v2/user/me',
 			        success: function(res) {
-	                console.log(res.id);//<---- 콘솔 로그에 id 정보 출력(id는 res안에 있기 때문에  res.id 로 불러온다)
-	                console.log(res.kaccount_email);//<---- 콘솔 로그에 email 정보 출력 (어딨는지 알겠죠?)
-	                console.log(res.properties['nickname']);//<---- 콘솔 로그에 닉네임 출력(properties에 있는 nickname 접근 
-	          		// res.properties.nickname으로도 접근 가능 )
-	                console.log(authObj.access_token);//<---- 콘솔 로그에 토큰값 출력
-			        var kakaonickname = res.properties.nickname;    //카카오톡 닉네임을 변수에 저장 (닉네임 값을 다른페이지로 넘겨 출력하기 위해서)
+	                console.log("id:"+res.id);
+	                console.log("email"+res.kaccount_email);
+	                console.log("nickname"+res.properties['nickname']);
+	                console.log("token"+authObj.access_token);
+	                console.log("gender:"+res.kakao_account.gender);
+	                console.log("profile:"+res.properties.profile_image);
+			        const kakao_nickname = res.properties['nickname'] ;
+			        const kakao_id = res.id;
+			        const gender = res.kakao_account.gender;
+			        const kakao_profile_image = res.properties.profile_image;
+			        
 			        //db에 내용 저장하기
+			        location.href = "/footprints/signUpCheck.do?kakao_nickname="+kakao_nickname+"&kakao_id="+kakao_id+"&gender="+gender+"&kakao_profile_image="+kakao_profile_image ;
 			        }
 	           })
            },
