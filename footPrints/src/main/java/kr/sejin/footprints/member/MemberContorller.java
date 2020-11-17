@@ -1,10 +1,15 @@
 package kr.sejin.footprints.member;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -12,6 +17,7 @@ public class MemberContorller {
 	@Autowired
 	MemberService service;
 	
+	//index 페이지
 	@RequestMapping("/index.do")
 	public ModelAndView main(HttpServletRequest req) {
 		ModelAndView mav = new ModelAndView();
@@ -29,6 +35,7 @@ public class MemberContorller {
 		
 	}
 	
+	//회원인지 확인
 	@RequestMapping("/signUpCheck.do")
 	public ModelAndView signUpCheck(int kakao_id, String kakao_nickname, String gender
 			, String kakao_profile_image, HttpServletRequest req) {
@@ -53,4 +60,42 @@ public class MemberContorller {
 		mav.setViewName("redirect:/index.do");
 		return mav;
 	}
+	
+	//이동 기록 페이지
+	@RequestMapping("/leaveFootprints.do")
+	public ModelAndView leaveFootprints(HttpServletRequest req) {
+		ModelAndView mav = new ModelAndView();
+		String mem_id = (String) req.getSession().getAttribute("mem_id");
+		String wk_info_id = service.checkWalkingState(mem_id);
+		System.out.println("wk_info_id:"+wk_info_id);
+		mav.addObject("mem_id", mem_id);
+		mav.addObject("wk_info_id", wk_info_id);
+		mav.setViewName("leaveFootprints");
+		return mav;
+	}
+	
+	//walkingInfo, walkingRecord 테이블에 insert (기록 시작버튼 클릭 시)
+	@RequestMapping(value="/walkingInfoInsert.do",
+			method = RequestMethod.GET,
+			produces = "application/text;charset=utf-8")
+	public @ResponseBody String getWalkerProfile(String mem_id, float currentLatitud, float currentLongitude) {
+		System.out.println("int 데이터타입:"+currentLatitud);
+		//walkingInfo 테이블에 insert
+		int result1 = service.walkingInfoInsert(mem_id);
+		String wk_info_id = service.checkWalkingState(mem_id);
+		
+		//walkingRecord 테이블에 insert
+		MemberDTO member = new MemberDTO();
+		member.setWk_info_id(wk_info_id);
+		member.setWk_latitude(currentLatitud);
+		member.setWk_longitude(currentLongitude);
+		member.setWk_record_marker(1);
+		int result2 = service.walkingRecordInsert(member);
+		
+		String state = "";
+		if(result1 >=1 || result2>=2) {
+			state = "success";
+		}
+		return state;
+	}	
 }

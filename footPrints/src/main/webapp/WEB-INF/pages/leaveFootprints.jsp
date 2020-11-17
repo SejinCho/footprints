@@ -24,12 +24,19 @@
 		<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=APIKEY&libraries=services,clusterer,drawing"></script>
     </head>
     <body id="page-top">
+    <input type="hidden" value="${mem_id}" id="mem_id" name="mem_id">
+    <input type="hidden" value="${wk_info_id}" id="wk_info_id" name="wk_info_id">
         <!-- Portfolio Grid-->
         <section class="page-section bg-light" id="portfolio">
             <div class="container">
                 <div class="text-center">
                     <h2 class="section-heading text-uppercase">Footprints</h2>
-                    <h3 class="section-subheading text-muted"><a id="startWalking">Start Walking</a></h3>
+                    <c:if test="${wk_info_id eq null}">
+                    	<h3 class="section-subheading text-muted"><a id="startWalking">Start Walking</a></h3>
+                    </c:if>
+                    <c:if test="${wk_info_id ne null}">
+                    	<h3 class="section-subheading text-muted"><a id="endWalking">end Walking</a></h3>
+                    </c:if>
                 </div>
                 <div class="row">
                     <div class="col-lg">
@@ -51,10 +58,11 @@
         <script>
         //map
         document.addEventListener("DOMContentLoaded",function(){
-        	
         	function getLocation(position){
         		var currentLatitud = position.coords.latitude; //X좌표(위도)
         		var currentLongitude = position.coords.longitude; //Y좌표 (경도)
+        		console.log("현재위치:"+currentLatitud+":"+currentLongitude);
+        		
         		var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
         		var options = { //지도를 생성할 때 필요한 기본 옵션
         			center: new kakao.maps.LatLng(currentLatitud, currentLongitude), //지도의 중심좌표.
@@ -76,32 +84,52 @@
         		//마커
         		//마커가 표시될 위치
         		var markerPosition = new kakao.maps.LatLng(currentLatitud,currentLongitude); 
-        		//마커 생성
+        		//마커 생성(기본마커)
         		var marker = new kakao.maps.Marker({position:markerPosition}); 
         		marker.setMap(map);
-        		
+        		console.log("데이터 타입:"+typeof(currentLatitud));
         		//start walking을 클릭 시
         		$('#startWalking').click(function(){
                 	//alert('시작');
-                	//시작 마커로 생성 
-                	
-                	var imageSrc = './resources/assets/img/footprints.png', // 마커이미지의 주소    
-                    imageSize = new kakao.maps.Size(50, 50), // 마커이미지의 크기
-                    imageOption = {offset: new kakao.maps.Point(27, 69)}; // 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정
-                      
-    	            // 마커의 이미지정보를 가지고 있는 마커이미지를 생성
-    	            var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption),
-    	                markerPosition = new kakao.maps.LatLng(currentLatitud, currentLongitude); // 마커가 표시될 위치입니다
-    	
-    	            // 마커를 생성
-    	            var startMarker = new kakao.maps.Marker({
-    	                position: markerPosition, 
-    	                image: markerImage // 마커이미지 설정 
-    	            });
-    	
-    	            // 마커가 지도 위에 표시되도록 설정합니다
-    	            marker.setMap(null);
-    	            startMarker.setMap(map);  
+  
+    	            //기록 시작 시 walkingInfo 테이블에 insert
+    	            //walkingRecord에 insert 
+    	            $.ajax({
+						url: "/footprints/walkingInfoInsert.do" ,
+						type: "get",
+						data:  {
+									"mem_id" : $('#mem_id').val(),
+									"currentLatitud" : currentLatitud,
+									"currentLongitude" : currentLongitude
+								},
+						async: false ,
+						success: function(data){ //익명으로 함수 생성
+							if(data == "success"){
+								var imageSrc = './resources/assets/img/footprints.png', // 마커이미지의 주소    
+			                    imageSize = new kakao.maps.Size(50, 50), // 마커이미지의 크기
+			                    imageOption = {offset: new kakao.maps.Point(27, 69)}; // 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정
+			                      
+			    	            // 마커의 이미지정보를 가지고 있는 마커이미지를 생성
+			    	            var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption),
+			    	                markerPosition = new kakao.maps.LatLng(currentLatitud, currentLongitude); // 마커가 표시될 위치입니다
+			    	
+			    	            // 마커를 생성
+			    	            var startMarker = new kakao.maps.Marker({
+			    	                position: markerPosition, 
+			    	                image: markerImage // 마커이미지 설정 
+			    	            });
+			    	
+			    	            // 마커가 지도 위에 표시되도록 설정합니다
+			    	            marker.setMap(null);
+			    	            startMarker.setMap(map);
+							}
+						
+						},
+						error: function(a,b,c){ //ajax 실패시 원인
+							alert("에러"+c);
+						}
+					})
+    	            
                 });
         		
         	}

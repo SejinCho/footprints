@@ -16,4 +16,16 @@
 	<select id="getMemberInfo" parameterType="String" resultType="member">
 		select * from member where mem_id = #{mem_id}
 	</select>
+	<!-- 이동거리를 기록 중인 것이 있는지 확인  -->
+	<select id="checkWalkingState" parameterType="Map" resultType="String">
+		select wk_info_id from walkingInfo where mem_id=#{mem_id} and wk_info_state=0	
+	</select>
+	<!-- walkingInfo 테이블에 insert -->
+	<insert id="walkingInfoInsert" parameterType="String">
+		insert into walkingInfo(wk_info_id,mem_id,wk_info_start_date,wk_info_state)
+		values('walking'||seq_walking.nextval,#{mem_id},sysdate,0)
+	</insert>
+	<insert id="walkingRecordInsert" parameterType="member">
+		insert into WalkingRecord values('record'||seq_record.nextval,#{wk_info_id},#{wk_latitude},#{wk_longitude},#{wk_record_marker})
+	</insert>
 </mapper>

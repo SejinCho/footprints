@@ -80,4 +80,5 @@
 		<beans:constructor-arg ref="sqlSessionFactory" />
 	</beans:bean>	
 	
+	
 </beans:beans>
