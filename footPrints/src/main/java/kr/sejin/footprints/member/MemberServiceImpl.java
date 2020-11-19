@@ -1,5 +1,7 @@
 package kr.sejin.footprints.member;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,14 +42,11 @@ public class MemberServiceImpl implements MemberService{
 	public int walkingRecordInsert(MemberDTO member) {
 		return memberDAO.walkingRecordInsert(member);
 	}
-	//기록 시작 시 insert들
+	//walkingRecord에 데이터 select
 	@Override
-	public int walkingStartInsert(MemberDTO member) {
-		int result = 0;
-		//walking 테이블에 insert
-		String mem_id = member.getMem_id();
-		int walkingResult = memberDAO.walkingInfoInsert(mem_id);
-		
-		return result;
+	public List<MemberDTO> walkingRecordInfo(String wk_info_id) {
+		List<MemberDTO> memberDto = memberDAO.walkingRecordInfo(wk_info_id);
+		return memberDto;
 	}
+
 }

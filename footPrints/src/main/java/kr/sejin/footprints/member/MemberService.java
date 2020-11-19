@@ -1,5 +1,6 @@
 package kr.sejin.footprints.member;
 
+import java.util.List;
 import java.util.Map;
 
 public interface MemberService {
@@ -15,5 +16,6 @@ public interface MemberService {
 	public int walkingInfoInsert(String mem_id);
 	//walkingRecord에 데이터 insert
 	public int walkingRecordInsert(MemberDTO member);
-	
+	//walkingRecord에 데이터 select
+	public List<MemberDTO> walkingRecordInfo(String wk_info_id);
 }

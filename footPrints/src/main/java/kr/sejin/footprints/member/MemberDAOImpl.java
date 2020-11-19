@@ -1,5 +1,6 @@
 package kr.sejin.footprints.member;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
@@ -40,5 +41,10 @@ public class MemberDAOImpl implements MemberDAO{
 	@Override
 	public int walkingRecordInsert(MemberDTO member) {
 		return sqlSession.insert("kr.sejin.footprints.member.walkingRecordInsert", member);
+	}
+	//walkingRecord에 데이터 select
+	@Override
+	public List<MemberDTO> walkingRecordInfo(String wk_info_id) {
+		return sqlSession.selectList("kr.sejin.footprints.member.walkingRecordInfo", wk_info_id);
 	}
 }

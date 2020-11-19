@@ -1,12 +1,15 @@
 package kr.sejin.footprints.member;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -68,6 +71,14 @@ public class MemberContorller {
 		String mem_id = (String) req.getSession().getAttribute("mem_id");
 		String wk_info_id = service.checkWalkingState(mem_id);
 		System.out.println("wk_info_id:"+wk_info_id);
+		List<MemberDTO> recordInfo = new ArrayList<MemberDTO>();
+		
+		//이동 기록 정보 가져오기
+		if(wk_info_id != null) {
+			recordInfo = service.walkingRecordInfo(wk_info_id);
+			mav.addObject("recordInfo", recordInfo);
+		}
+		
 		mav.addObject("mem_id", mem_id);
 		mav.addObject("wk_info_id", wk_info_id);
 		mav.setViewName("leaveFootprints");
@@ -94,8 +105,19 @@ public class MemberContorller {
 		
 		String state = "";
 		if(result1 >=1 || result2>=2) {
-			state = "success";
+			state = wk_info_id;
 		}
 		return state;
-	}	
+	}
+	
+	//walkingRecord 테이블에서 정보 가져오기
+	@RequestMapping(value="/walkingRecordInfo.do",
+			method = RequestMethod.GET,
+			produces = "application/text;charset=utf-8")
+	@ResponseBody
+	public List<MemberDTO> walkingRecordInfo(String wk_info_id) {
+		List<MemberDTO> memberDto = service.walkingRecordInfo(wk_info_id);
+		System.out.println("여기 들어오나 확인");
+		return memberDto;
+	}
 }
