@@ -47,4 +47,9 @@ public class MemberDAOImpl implements MemberDAO{
 	public List<MemberDTO> walkingRecordInfo(String wk_info_id) {
 		return sqlSession.selectList("kr.sejin.footprints.member.walkingRecordInfo", wk_info_id);
 	}
+	//기록 종료 시 walkingInfo 테이블에 wk_info_state update
+	@Override
+	public int endWalkingInfoStateUpdate(MemberDTO member) {
+		return sqlSession.update("kr.sejin.footprints.member.endWalkingStateUpdate", member);
+	}
 }

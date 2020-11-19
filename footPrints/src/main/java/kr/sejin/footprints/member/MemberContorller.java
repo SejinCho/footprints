@@ -110,14 +110,24 @@ public class MemberContorller {
 		return state;
 	}
 	
-	//walkingRecord 테이블에서 정보 가져오기
-	@RequestMapping(value="/walkingRecordInfo.do",
+	//기록 종료 버튼 클릭 시 walkingInfo waking state update& walkingRecord insert
+	@RequestMapping(value="/walkingFinish.do",
 			method = RequestMethod.GET,
 			produces = "application/text;charset=utf-8")
-	@ResponseBody
-	public List<MemberDTO> walkingRecordInfo(String wk_info_id) {
-		List<MemberDTO> memberDto = service.walkingRecordInfo(wk_info_id);
-		System.out.println("여기 들어오나 확인");
-		return memberDto;
+	public @ResponseBody String walkingFinish(String wk_info_id, float currentLatitud, float currentLongitude) {
+		MemberDTO member = new MemberDTO();
+		int wk_record_marker = 3;
+		String retVal = "";
+		
+		member.setWk_record_marker(wk_record_marker);
+		member.setWk_info_id(wk_info_id);
+		member.setWk_latitude(currentLatitud);
+		member.setWk_longitude(currentLongitude);
+		int result = service.walkingFinish(member);
+		
+		if(result ==1) {
+			retVal = "success";
+		}
+		return retVal;
 	}
 }

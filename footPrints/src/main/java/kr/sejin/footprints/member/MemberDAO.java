@@ -18,4 +18,6 @@ public interface MemberDAO {
 	public int walkingRecordInsert(MemberDTO member);
 	//walkingRecord에 데이터 select
 	public List<MemberDTO> walkingRecordInfo(String wk_info_id);
+	//기록 종료 시 walkingInfo 테이블에 wk_info_state update
+	public int endWalkingInfoStateUpdate(MemberDTO member);
 }

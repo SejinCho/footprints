@@ -18,4 +18,6 @@ public interface MemberService {
 	public int walkingRecordInsert(MemberDTO member);
 	//walkingRecord에 데이터 select
 	public List<MemberDTO> walkingRecordInfo(String wk_info_id);
+	//end walking
+	public int walkingFinish(MemberDTO member);
 }

@@ -81,5 +81,25 @@
 		<beans:constructor-arg ref="sqlSessionFactory" />
 	</beans:bean>	
 	
-	
+	<!-- =========aop를 이용한 선언적 트랜잭션의 처리============== -->
+	<!-- 1. 트랜잭션 처리를 위해 제공하는 spring클래스를 등록 -->
+	<beans:bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<beans:property name="dataSource" ref="ds"/>
+	</beans:bean>
+	<!-- 2. 1번에서 등록한 트랜잭션 처리 클래스를 advice로 등록 -->
+	<tx:advice id="transactionAdvice"
+		transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*" rollback-for="Exception"/>
+		</tx:attributes>
+	</tx:advice>
+	<!-- 3. aop처리 -->
+	<aop:config>
+		<!-- 펫 프렌즈 신청 트랜잭션 처리 -->
+		<aop:pointcut expression="execution(*
+		 kr.sejin.footprints.member.*.walkingFinish(..))"
+			 id="walkingFinish"/>
+		<aop:advisor advice-ref="transactionAdvice" pointcut-ref="walkingFinish"/>
+	</aop:config>
 </beans:beans>

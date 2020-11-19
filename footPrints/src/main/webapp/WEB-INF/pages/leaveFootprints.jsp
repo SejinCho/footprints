@@ -92,12 +92,14 @@
         		var marker = new kakao.maps.Marker({position:markerPosition}); 
         		marker.setMap(map);
         		
-        		// **db에 있는 정보로 폴리라인 그리기**
+        		// **폴리라인 그리기**
+        		
+        		//db에 있는 정보로 폴리라인 그리기
+        		var linePath = [];
         		if($('#wk_info_id').val()!=null || $('#wk_info_id').val()!=""){
         			var recordInfo = "${recordInfo}" ;
         			console.log("데이터 확인"+recordInfo);
-        			
-            		var linePath = [];
+      
         			<c:forEach var="item" items="${recordInfo}">
         				if("${item.wk_record_marker}"==1){ //기록 시작 위치에 마커
         					console.log("11111111111");
@@ -124,6 +126,7 @@
         				linePath.push(new kakao.maps.LatLng("${item.wk_latitude}", "${item.wk_longitude}"));
         				
         			</c:forEach>
+        			
             		console.log("linePath 확인::::"+linePath);
             		console.log("linePath 데이터 타입 확인:::"+typeof(linePath));
 
@@ -140,8 +143,9 @@
     				polyline.setMap(map);  
         		}
         		
+        		//실시간으로 이동 위치 폴리라인 그리기 --------------------------(미완성)
         		
-        		//실시간으로 이동 위치 폴리라인 그리기
+        		
         		
         		//start walking을 클릭 시
         		$('#startWalking').click(function(){
@@ -197,6 +201,24 @@
         		$('#endWalking').click(function(){
         			var wk_info_id = $('#wk_info_id').val();
         			alert("기록 종료 : "+wk_info_id);
+        			$.ajax({
+						url: "/footprints/walkingFinish.do" ,
+						type: "get",
+						data:  {
+									"wk_info_id" : wk_info_id,
+									"currentLatitud" : currentLatitud,
+									"currentLongitude" : currentLongitude
+								},
+						success: function(data){ 
+							//실시간 기록 종료하기 -------------------------(미완성)
+							alert(data);
+							//마이페이지 이동 -------------------------(미완성)
+						},
+						error: function(a,b,c){ //ajax 실패시 원인
+							alert("에러2"+c);
+						}
+					})
+        			
         		});
         		
         	}

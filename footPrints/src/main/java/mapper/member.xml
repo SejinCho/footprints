@@ -25,6 +25,7 @@
 		insert into walkingInfo(wk_info_id,mem_id,wk_info_start_date,wk_info_state)
 		values('walking'||seq_walking.nextval,#{mem_id},sysdate,0)
 	</insert>
+	<!-- walkingRecord 테이블에 insert -->
 	<insert id="walkingRecordInsert" parameterType="member">
 		insert into WalkingRecord values('record'||seq_record.nextval,#{wk_info_id},#{wk_latitude},#{wk_longitude},#{wk_record_marker})
 	</insert>
@@ -32,4 +33,8 @@
 	<select id="walkingRecordInfo" parameterType="String" resultType="member">
 		select * from walkingRecord where wk_info_id = #{wk_info_id} order by wk_record_id 
 	</select>
+	<!-- end walking버튼 클릭 시 walkingInfo테이블 walking state update -->
+	<update id="endWalkingStateUpdate" parameterType="String">
+		update walkingInfo set wk_info_state = 1 where wk_info_id=#{wk_info_id}
+	</update>
 </mapper>

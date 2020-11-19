@@ -48,5 +48,16 @@ public class MemberServiceImpl implements MemberService{
 		List<MemberDTO> memberDto = memberDAO.walkingRecordInfo(wk_info_id);
 		return memberDto;
 	}
+	//end walking
+	@Override
+	public int walkingFinish(MemberDTO member) {
+		int result = 0;
+		int walkingInfoResult = memberDAO.endWalkingInfoStateUpdate(member);
+		int walkingRecordResult = memberDAO.walkingRecordInsert(member);
+		if(walkingInfoResult==1 && walkingRecordResult==1) {
+			result = 1;
+		}
+		return result;
+	}
 
 }
