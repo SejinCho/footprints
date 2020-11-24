@@ -96,9 +96,11 @@
         		
         		//db에 있는 정보로 폴리라인 그리기
         		var linePath = [];
-        		if($('#wk_info_id').val()!=null || $('#wk_info_id').val()!=""){
+        		var wk_info_id = "${wk_info_id}";
+        		
+        		if(! wk_info_id ==null || !wk_info_id == ""){ //db에 정보가 있는 경우
         			var recordInfo = "${recordInfo}" ;
-        			console.log("데이터 확인"+recordInfo);
+        			console.log("데이터 확인1"+recordInfo);
       
         			<c:forEach var="item" items="${recordInfo}">
         				if("${item.wk_record_marker}"==1){ //기록 시작 위치에 마커
@@ -141,9 +143,15 @@
     				
     				// 지도에 선을 표시합니다 
     				polyline.setMap(map);  
+    				
+    				//실시간으로 이동 위치 폴리라인 그리기 (10초마다 반복 실행)
+            		var polyLineInterval = setInterval(function(){
+            			linePath.push(new kakao.maps.LatLng(currentLatitud,currentLongitude));
+            			console.log("linePath 확인::::"+linePath);
+            		},10000);
         		}
         		
-        		//실시간으로 이동 위치 폴리라인 그리기 --------------------------(미완성)
+        		
         		
         		
         		
@@ -185,6 +193,12 @@
 			    	            // 마커가 지도 위에 표시되도록 설정합니다
 			    	            marker.setMap(null);
 			    	            startMarker.setMap(map);
+			    	            
+			    	            //10초마다 현재위치 가져오기
+			    	            var polyLineInterval = setInterval(function(){
+			            			linePath.push(new kakao.maps.LatLng(currentLatitud,currentLongitude));
+			            			console.log("linePath 확인::::"+linePath);
+			            		},10000);
 							}
 						
 						},
@@ -210,7 +224,10 @@
 									"currentLongitude" : currentLongitude
 								},
 						success: function(data){ 
-							//실시간 기록 종료하기 -------------------------(미완성)
+							//실시간 기록 종료하기
+							
+							clearTimeout(polyLineInterval);
+							
 							alert(data);
 							//마이페이지 이동 -------------------------(미완성)
 						},
